@@ -1,0 +1,15 @@
+services:
+  todolist-postgres:
+    image: postgres:18.3-bookworm
+    container_name: todolist-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./out/pgdata:/var/lib/postgresql
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    restart:
+      always
+
