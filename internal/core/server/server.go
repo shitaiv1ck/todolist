@@ -11,12 +11,12 @@ import (
 
 type Server struct {
 	config Config
-	router *http.ServeMux
+	router http.Handler
 
 	logger *core_logger.Logger
 }
 
-func NewServer(router *http.ServeMux, logger *core_logger.Logger) *Server {
+func NewServer(router http.Handler, logger *core_logger.Logger) *Server {
 	return &Server{
 		config: NewConfigMust(),
 		router: router,

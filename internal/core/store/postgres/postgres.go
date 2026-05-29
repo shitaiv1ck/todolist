@@ -23,6 +23,10 @@ func NewStore(logger *core_logger.Logger) *Store {
 	}
 }
 
+func (s *Store) GetDB() *sql.DB {
+	return s.db
+}
+
 func (s *Store) Open() error {
 	url := fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",

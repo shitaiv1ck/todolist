@@ -1,0 +1,50 @@
+package users_repository
+
+import (
+	"fmt"
+
+	"github.com/lib/pq"
+	"github.com/shitaiv1ck/todolist/internal/core/domains"
+	core_errors "github.com/shitaiv1ck/todolist/internal/core/errors"
+	core_postgres "github.com/shitaiv1ck/todolist/internal/core/store/postgres"
+)
+
+type UsersRepository struct {
+	store *core_postgres.Store
+}
+
+func NewRepository(store *core_postgres.Store) *UsersRepository {
+	return &UsersRepository{
+		store: store,
+	}
+}
+
+func (r *UsersRepository) CreateUser(user *domains.User) (*domains.User, error) {
+	db := r.store.GetDB()
+
+	query := `
+		INSERT INTO todolist.users(username, encrypted_password)
+		VALUES ($1, $2)
+		RETURNING id, username;
+	`
+
+	var savedUser domains.User
+	if err := db.QueryRow(
+		query,
+		user.Username,
+		user.EncryptedPassword,
+	).Scan(
+		&savedUser.ID,
+		&savedUser.Username,
+	); err != nil {
+		if errPQ, ok := err.(*pq.Error); ok {
+			if errPQ.Code == "23505" {
+				return nil, fmt.Errorf("%v: %w", err, core_errors.ErrConflict)
+			}
+		}
+
+		return nil, err
+	}
+
+	return &savedUser, nil
+}

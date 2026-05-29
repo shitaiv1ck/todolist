@@ -3,12 +3,12 @@ CREATE SCHEMA todolist;
 CREATE TABLE todolist.users(
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    ecrypted_password VARCHAR(255) NOT NULL,
+    encrypted_password VARCHAR(255) NOT NULL,
 
     CONSTRAINT check_username CHECK(length(username) > 8) 
 );
 
-CREATE TABLE todolist.users_sessions(
+CREATE TABLE todolist.sessions(
     session_token VARCHAR(255) NOT NULL PRIMARY KEY,
     csrf_token VARCHAR(255) NOT NULL,
     user_id INT NOT NULL REFERENCES todolist.users(id) ON DELETE CASCADE,
@@ -18,7 +18,7 @@ CREATE TABLE todolist.users_sessions(
     CONSTRAINT check_expires_at CHECK(expires_at > created_at)
 );
 
-CREATE TABLE todolist.sessions(
+CREATE TABLE todolist.tasks(
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES todolist.users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
