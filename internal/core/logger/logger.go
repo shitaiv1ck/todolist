@@ -1,6 +1,7 @@
 package core_logger
 
 import (
+	"context"
 	"os"
 
 	"go.uber.org/zap"
@@ -29,4 +30,16 @@ func NewLogger(config Config) (*Logger, error) {
 	return &Logger{
 		Logger: zapLogger,
 	}, nil
+}
+
+func (l *Logger) With(fields ...zap.Field) *Logger {
+	return &Logger{
+		Logger: l.Logger.With(fields...),
+	}
+}
+
+func FromContext(cxt context.Context) *Logger {
+	logger := cxt.Value("logger").(*Logger)
+
+	return logger
 }
