@@ -9,36 +9,43 @@ import (
 )
 
 type ResponseHandler struct {
-	w http.ResponseWriter
+	http.ResponseWriter
+	statusCode int
 }
 
 func NewResponseHandler(w http.ResponseWriter) *ResponseHandler {
 	return &ResponseHandler{
-		w: w,
+		ResponseWriter: w,
 	}
 }
 
-func (r *ResponseHandler) JsonResponse(responseBody any, statusCode int) {
-	r.w.WriteHeader(statusCode)
+func (rw *ResponseHandler) JsonResponse(responseBody any, statusCode int) {
+	rw.statusCode = statusCode
 
-	if err := json.NewEncoder(r.w).Encode(responseBody); err != nil {
+	rw.WriteHeader(rw.statusCode)
+
+	if err := json.NewEncoder(rw).Encode(responseBody); err != nil {
 		panic(err)
 	}
 }
 
-func (r *ResponseHandler) ErrorResponse(msg string, err error) {
-	statusCode := setErrStatusCode(err)
+func (rw *ResponseHandler) ErrorResponse(msg string, err error) {
+	rw.statusCode = setErrStatusCode(err)
 
-	r.w.WriteHeader(statusCode)
+	rw.WriteHeader(rw.statusCode)
 
 	errResponse := ErrorDTO{
 		Message: msg,
 		Error:   err.Error(),
 	}
 
-	if err := json.NewEncoder(r.w).Encode(errResponse); err != nil {
+	if err := json.NewEncoder(rw).Encode(errResponse); err != nil {
 		panic(err)
 	}
+}
+
+func (rw *ResponseHandler) GetStatusCode() int {
+	return rw.statusCode
 }
 
 func setErrStatusCode(err error) int {
@@ -47,6 +54,12 @@ func setErrStatusCode(err error) int {
 	}
 	if errors.Is(err, core_errors.ErrConflict) {
 		return http.StatusConflict
+	}
+	if errors.Is(err, core_errors.ErrNotFound) {
+		return http.StatusNotFound
+	}
+	if errors.Is(err, core_errors.ErrUnautorize) {
+		return http.StatusUnauthorized
 	}
 
 	return http.StatusInternalServerError

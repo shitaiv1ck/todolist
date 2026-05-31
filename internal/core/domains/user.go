@@ -37,3 +37,7 @@ func (u *User) EncryptePassword() error {
 
 	return nil
 }
+
+func (u *User) ComparePassword(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password))
+}

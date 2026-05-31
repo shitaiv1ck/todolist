@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/shitaiv1ck/todolist/internal/core/domains"
+	core_errors "github.com/shitaiv1ck/todolist/internal/core/errors"
 	core_logger "github.com/shitaiv1ck/todolist/internal/core/logger"
 	core_request "github.com/shitaiv1ck/todolist/internal/core/transport/request"
 	core_response "github.com/shitaiv1ck/todolist/internal/core/transport/response"
@@ -55,5 +56,25 @@ func (ut *UsersTransport) CreateUserHandler() http.HandlerFunc {
 		}
 
 		responseHandler.JsonResponse(response, http.StatusCreated)
+	}
+}
+
+func (ut *UsersTransport) GetMeHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logger := core_logger.FromContext(r.Context())
+		responseHandler := core_response.NewResponseHandler(w)
+
+		logger.Debug("invoke GetME handler")
+
+		userID := r.Context().Value("user_id")
+		if userID == nil {
+			responseHandler.ErrorResponse("authenticate user", core_errors.ErrUnautorize)
+		}
+
+		response := map[string]int{
+			"id": userID.(int),
+		}
+
+		responseHandler.JsonResponse(response, http.StatusOK)
 	}
 }

@@ -1,6 +1,8 @@
 package users_repository
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/lib/pq"
@@ -47,4 +49,32 @@ func (r *UsersRepository) CreateUser(user *domains.User) (*domains.User, error) 
 	}
 
 	return &savedUser, nil
+}
+
+func (r *UsersRepository) FindByUsername(username string) (*domains.User, error) {
+	db := r.store.GetDB()
+
+	query := `
+		SELECT id, username, encrypted_password
+		FROM todolist.users
+		WHERE username = $1;
+	`
+
+	var foundUser domains.User
+	if err := db.QueryRow(
+		query,
+		username,
+	).Scan(
+		&foundUser.ID,
+		&foundUser.Username,
+		&foundUser.EncryptedPassword,
+	); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, core_errors.ErrNotFound
+		}
+
+		return nil, err
+	}
+
+	return &foundUser, nil
 }
