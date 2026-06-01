@@ -68,7 +68,7 @@ func (ut *UsersTransport) GetMeHandler() http.HandlerFunc {
 
 		userID := r.Context().Value("user_id")
 		if userID == nil {
-			responseHandler.ErrorResponse("authenticate user", core_errors.ErrUnautorize)
+			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
 		}
 
 		response := map[string]int{

@@ -25,7 +25,7 @@ CREATE TABLE todolist.tasks(
     description VARCHAR(1000),
     completed BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    completed_at TIMESTAMP NOT NULL,
+    completed_at TIMESTAMP,
 
     CONSTRAINT check_completed_at CHECK(completed_at >= created_at)
 );

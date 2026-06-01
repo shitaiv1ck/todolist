@@ -7,4 +7,5 @@ var (
 	ErrConflict        = errors.New("already exists")
 	ErrNotFound        = errors.New("not found")
 	ErrUnautorize      = errors.New("invalid username or password")
+	ErrCookie          = errors.New("invalid cookie's values")
 )

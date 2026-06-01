@@ -13,6 +13,9 @@ import (
 	sessions_repository "github.com/shitaiv1ck/todolist/internal/features/sessions/repository"
 	sessions_service "github.com/shitaiv1ck/todolist/internal/features/sessions/service"
 	sessions_transport "github.com/shitaiv1ck/todolist/internal/features/sessions/transport"
+	tasks_repository "github.com/shitaiv1ck/todolist/internal/features/tasks/repository"
+	tasks_service "github.com/shitaiv1ck/todolist/internal/features/tasks/service"
+	tasks_transport "github.com/shitaiv1ck/todolist/internal/features/tasks/transport"
 	users_repository "github.com/shitaiv1ck/todolist/internal/features/users/repository"
 	users_service "github.com/shitaiv1ck/todolist/internal/features/users/service"
 	users_transport "github.com/shitaiv1ck/todolist/internal/features/users/transport"
@@ -41,19 +44,26 @@ func main() {
 	sessionsService := sessions_service.NewService(usersRepository, sessionsRepository)
 	sessionsTransport := sessions_transport.NewTransport(sessionsService)
 
+	tasksRepisotory := tasks_repository.NewRepository(store)
+	tasksService := tasks_service.NewService(tasksRepisotory)
+	tasksTransport := tasks_transport.NewTransport(tasksService)
+
 	private := http.NewServeMux()
 	private.Handle("GET /users/me", usersTransport.GetMeHandler())
+	privateRouter := core_middleware.ChainAuthenticated(private, sessionsService)
 
-	privateRouter := core_middleware.AuthenticateMiddleware(private, sessionsService)
+	protected := http.NewServeMux()
+	protected.Handle("POST /tasks", tasksTransport.CreateTaskHandler())
+	protectedRouter := core_middleware.ChainProtected(protected, sessionsService)
 
-	router := http.NewServeMux()
-	router.Handle("POST /users", usersTransport.CreateUserHandler())
-	router.Handle("/private/", http.StripPrefix("/private", privateRouter))
-	router.Handle("POST /sessions", sessionsTransport.CreateSessionHandler())
+	common := http.NewServeMux()
+	common.Handle("POST /api/users", usersTransport.CreateUserHandler())
+	common.Handle("POST /api/sessions", sessionsTransport.CreateSessionHandler())
+	common.Handle("/api/", http.StripPrefix("/api", privateRouter))
+	common.Handle("/api/protected/", http.StripPrefix("/api/protected", protectedRouter))
+	routerAPI := core_middleware.ChainCommon(common, logger)
 
-	public := core_middleware.PublicMiddleware(router, logger)
-
-	server := core_server.NewServer(public, logger)
+	server := core_server.NewServer(routerAPI, logger)
 
 	if err := server.Run(ctx); err != nil {
 		panic(err)

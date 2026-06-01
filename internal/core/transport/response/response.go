@@ -20,9 +20,7 @@ func NewResponseHandler(w http.ResponseWriter) *ResponseHandler {
 }
 
 func (rw *ResponseHandler) JsonResponse(responseBody any, statusCode int) {
-	rw.statusCode = statusCode
-
-	rw.WriteHeader(rw.statusCode)
+	rw.WriteHeader(statusCode)
 
 	if err := json.NewEncoder(rw).Encode(responseBody); err != nil {
 		panic(err)
@@ -30,9 +28,9 @@ func (rw *ResponseHandler) JsonResponse(responseBody any, statusCode int) {
 }
 
 func (rw *ResponseHandler) ErrorResponse(msg string, err error) {
-	rw.statusCode = setErrStatusCode(err)
+	statusCode := setErrStatusCode(err)
 
-	rw.WriteHeader(rw.statusCode)
+	rw.WriteHeader(statusCode)
 
 	errResponse := ErrorDTO{
 		Message: msg,
@@ -42,6 +40,12 @@ func (rw *ResponseHandler) ErrorResponse(msg string, err error) {
 	if err := json.NewEncoder(rw).Encode(errResponse); err != nil {
 		panic(err)
 	}
+}
+
+func (rw *ResponseHandler) WriteHeader(statusCode int) {
+	rw.ResponseWriter.WriteHeader(statusCode)
+
+	rw.statusCode = statusCode
 }
 
 func (rw *ResponseHandler) GetStatusCode() int {
@@ -59,6 +63,9 @@ func setErrStatusCode(err error) int {
 		return http.StatusNotFound
 	}
 	if errors.Is(err, core_errors.ErrUnautorize) {
+		return http.StatusUnauthorized
+	}
+	if errors.Is(err, core_errors.ErrCookie) {
 		return http.StatusUnauthorized
 	}
 
