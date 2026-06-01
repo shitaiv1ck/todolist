@@ -59,9 +59,12 @@ todolist
 │           ├─ dto.go
 │           └─ transport.go
 ├─ Makefile                   # Cборка проекта
+├─ .env                       # Переменные окружения
 ├─ migrations                 # Миграции
 │  ├─ 000001_init.down.sql
 │  └─ 000001_init.up.sql
+├─ out
+│  └─ pgdata                  # Файлы БД
 └─ readme.md
 
 ```
