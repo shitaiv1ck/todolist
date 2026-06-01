@@ -40,7 +40,7 @@ func (st *SessionsTransport) CreateSessionHandler() http.HandlerFunc {
 
 		userID, err := st.service.Authenticate(request.Username, request.Password)
 		if err != nil {
-			responseHandler.ErrorResponse("authenticate user", err)
+			responseHandler.ErrorResponse("failed to authentication", err)
 
 			return
 		}
