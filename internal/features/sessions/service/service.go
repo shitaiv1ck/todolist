@@ -22,6 +22,7 @@ type UsersRepository interface {
 type SessionsRepository interface {
 	CreateSession(session *domains.Session) (*domains.Session, error)
 	FindByToken(token string) (*domains.Session, error)
+	DeleteByToken(sessionToken string) error
 }
 
 func NewService(usersRep UsersRepository, sessionsRep SessionsRepository) *SessionsService {
@@ -95,4 +96,12 @@ func generateToken(len int) (string, error) {
 	token := base64.URLEncoding.EncodeToString(bytes)
 
 	return token, nil
+}
+
+func (s *SessionsService) DeleteByToken(sessionToken string) error {
+	if err := s.sessionsRep.DeleteByToken(sessionToken); err != nil {
+		return err
+	}
+
+	return nil
 }

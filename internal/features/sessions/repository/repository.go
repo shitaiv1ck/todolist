@@ -77,3 +77,25 @@ func (r *SessionsRepository) FindByToken(token string) (*domains.Session, error)
 
 	return &foundSession, nil
 }
+
+func (r *SessionsRepository) DeleteByToken(sessionToken string) error {
+	db := r.store.GetDB()
+
+	query := `
+		DELETE FROM todolist.sessions
+		WHERE session_token = $1;
+	`
+
+	if _, err := db.Exec(
+		query,
+		sessionToken,
+	); err != nil {
+		if errors.Is(err, core_errors.ErrNotFound) {
+			return core_errors.ErrNotFound
+		}
+
+		return err
+	}
+
+	return nil
+}
