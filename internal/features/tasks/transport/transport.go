@@ -16,6 +16,7 @@ type TasksTransport struct {
 
 type TasksService interface {
 	CreateTask(task *domains.Task) (*domains.Task, error)
+	UpdateTask(patch *domains.TaskPatch) (*domains.Task, error)
 }
 
 func NewTransport(service TasksService) *TasksTransport {
@@ -69,5 +70,62 @@ func (t *TasksTransport) CreateTaskHandler() http.HandlerFunc {
 		}
 
 		responseHandler.JsonResponse(response, http.StatusCreated)
+	}
+}
+
+func (t *TasksTransport) PatchTaskHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logger := core_logger.FromContext(r.Context())
+		responseHandler := core_response.NewResponseHandler(w)
+
+		logger.Debug("invoke PatchTask handler")
+
+		userID := r.Context().Value("user_id")
+		if userID == nil {
+			responseHandler.ErrorResponse("failed to authenticate", core_errors.ErrUnautorize)
+
+			return
+		}
+
+		taskID, err := core_request.GetIntPathValue(r, "id")
+		if err != nil {
+			responseHandler.ErrorResponse("failed to get path value", core_errors.ErrInvalidArgument)
+
+			return
+		}
+
+		var request PatchTaskRequest
+		if err := core_request.DecodeAndValidate(r, &request); err != nil {
+			responseHandler.ErrorResponse("decode and validate", err)
+
+			return
+		}
+
+		patch := domains.NewTaskPatch(
+			taskID,
+			userID.(int),
+			request.Title,
+			request.Description,
+			request.Completed,
+		)
+
+		patchedTask, err := t.service.UpdateTask(patch)
+		if err != nil {
+			responseHandler.ErrorResponse("failed to patch task", err)
+
+			return
+		}
+
+		response := PatchTaskResponse{
+			ID:          patchedTask.ID,
+			UserID:      patch.UserID,
+			Title:       patchedTask.Title,
+			Description: patchedTask.Description,
+			Completed:   patchedTask.Completed,
+			CreatedAt:   patchedTask.CreatedAt,
+			CompletedAt: patchedTask.CompletedAt,
+		}
+
+		responseHandler.JsonResponse(response, http.StatusOK)
 	}
 }

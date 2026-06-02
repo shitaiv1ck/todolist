@@ -55,6 +55,7 @@ func main() {
 	protected := http.NewServeMux()
 	protected.Handle("POST /tasks", tasksTransport.CreateTaskHandler())
 	protected.Handle("DELETE /sessions", sessionsTransport.DeleteSessionHandler())
+	protected.Handle("PATCH /tasks/{id}", tasksTransport.PatchTaskHandler())
 	protectedRouter := core_middleware.ChainProtected(protected, sessionsService)
 
 	common := http.NewServeMux()
