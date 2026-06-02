@@ -1,6 +1,6 @@
 # REST API TODOLIST APPLICATION
 
-Реализация backend-части будущего веб-приложения по принципам REST API на **Golang** + **PostgresSQL**
+Реализация backend-части будущего веб-приложения по принципам REST API на **Golang** + **PostgreSQL**
 
 ## Структура проекта
 ```
