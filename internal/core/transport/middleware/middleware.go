@@ -2,7 +2,6 @@ package core_middleware
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -97,7 +96,6 @@ func ValidateCSRF() Middleware {
 			responseHandler := core_response.NewResponseHandler(w)
 
 			csrfFromReq := r.Header.Get(csrfToken)
-			fmt.Println(csrfFromReq)
 			if csrfFromReq == "" {
 				responseHandler.ErrorResponse("failed to authentication", core_errors.ErrCookie)
 
@@ -105,7 +103,6 @@ func ValidateCSRF() Middleware {
 			}
 
 			csrfFromCoockie := r.Context().Value("csrf_token").(string)
-			fmt.Println(csrfFromCoockie)
 			if csrfFromReq != csrfFromCoockie {
 				responseHandler.ErrorResponse("failed to authentication", core_errors.ErrCookie)
 
