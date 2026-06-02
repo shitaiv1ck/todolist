@@ -90,4 +90,4 @@ todolist
 | `POST` /api/sessions             | Создание новой сессии                 | 
 | `DELETE` /api/protected/sessions | Удаление текущей сессии               | 
 | `POST` /api/protected/tasks      | Создание новой задача                 | 
-| `PATCH` /api/protected/tasks{id} | Изменение задачи по ID текущей сессии | 
+| `PATCH` /api/protected/tasks{id} | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
