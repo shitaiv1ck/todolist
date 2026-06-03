@@ -17,6 +17,7 @@ type TasksTransport struct {
 type TasksService interface {
 	CreateTask(task *domains.Task) (*domains.Task, error)
 	UpdateTask(patch *domains.TaskPatch) (*domains.Task, error)
+	DeleteTask(id int, userID int) error
 }
 
 func NewTransport(service TasksService) *TasksTransport {
@@ -127,5 +128,36 @@ func (t *TasksTransport) PatchTaskHandler() http.HandlerFunc {
 		}
 
 		responseHandler.JsonResponse(response, http.StatusOK)
+	}
+}
+
+func (t *TasksTransport) DeleteTaskHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logger := core_logger.FromContext(r.Context())
+		responseHandler := core_response.NewResponseHandler(w)
+
+		logger.Debug("invoke DeleteTask handler")
+
+		userID := r.Context().Value("user_id")
+		if userID == nil {
+			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
+
+			return
+		}
+
+		taskID, err := core_request.GetIntPathValue(r, "id")
+		if err != nil {
+			responseHandler.ErrorResponse("failed to get taskID from path", err)
+
+			return
+		}
+
+		if err := t.service.DeleteTask(taskID, userID.(int)); err != nil {
+			responseHandler.ErrorResponse("failed to delete task", err)
+
+			return
+		}
+
+		responseHandler.WriteHeader(http.StatusNoContent)
 	}
 }

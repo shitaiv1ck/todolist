@@ -1,6 +1,6 @@
 # REST API TODOLIST APPLICATION
 
-Реализация backend-части будущего веб-приложения по принципам REST API на **Golang** + **PostgresSQL**
+Реализация backend-части будущего веб-приложения по принципам REST API на **Golang** + **PostgreSQL**
 
 ## Структура проекта
 ```
@@ -33,7 +33,8 @@ todolist
 │  │     ├─ middleware
 │  │     │  └─ middleware.go
 │  │     ├─ request
-│  │     │  └─ decode.go
+│  │     │  ├─ decode.go
+│  │     │  └─ pathvalue.go
 │  │     └─ response
 │  │        ├─ dto.go
 │  │        └─ response.go
@@ -83,11 +84,12 @@ todolist
 
 ## API ENDPOINTS
 
-| Endpoint                         | Описание                              |
-| -------------------------------- | ------------------------------------- |
-| `POST` /api/users                | Создание нового пользователя          |
-| `GET` /api/users/me              | Получение текущей сессии              |
-| `POST` /api/sessions             | Создание новой сессии                 | 
-| `DELETE` /api/protected/sessions | Удаление текущей сессии               | 
-| `POST` /api/protected/tasks      | Создание новой задача                 | 
-| `PATCH` /api/protected/tasks{id} | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
+| Endpoint                              | Описание                              |
+| ------------------------------------- | ------------------------------------- |
+| `POST` /api/users                     | Создание нового пользователя          |
+| `GET` /api/users/me                   | Получение текущей сессии              |
+| `POST` /api/sessions                  | Создание новой сессии                 | 
+| `DELETE` /api/protected/sessions      | Удаление текущей сессии               | 
+| `POST` /api/protected/tasks           | Создание новой задача                 | 
+| `PATCH` /api/protected/tasks{id}      | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
+| `DELETE` /api/protected/tasks{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) | 
