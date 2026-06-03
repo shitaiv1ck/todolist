@@ -3,6 +3,7 @@ package sessions_repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/shitaiv1ck/todolist/internal/core/domains"
 	core_errors "github.com/shitaiv1ck/todolist/internal/core/errors"
@@ -86,15 +87,18 @@ func (r *SessionsRepository) DeleteByToken(sessionToken string) error {
 		WHERE session_token = $1;
 	`
 
-	if _, err := db.Exec(
-		query,
-		sessionToken,
-	); err != nil {
-		if errors.Is(err, core_errors.ErrNotFound) {
-			return core_errors.ErrNotFound
-		}
-
+	result, err := db.Exec(query, sessionToken)
+	if err != nil {
 		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows != 1 {
+		return fmt.Errorf("session doesn't exist: %w", core_errors.ErrNotFound)
 	}
 
 	return nil

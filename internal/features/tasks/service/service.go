@@ -10,6 +10,7 @@ type TasksRepository interface {
 	CreateTask(task *domains.Task) (*domains.Task, error)
 	UpdateTask(task *domains.Task) (*domains.Task, error)
 	FindByUserID(id int, userID int) (*domains.Task, error)
+	DeleteTask(id int, userID int) error
 }
 
 func NewService(rep TasksRepository) *TasksService {
@@ -43,4 +44,12 @@ func (s *TasksService) UpdateTask(patch *domains.TaskPatch) (*domains.Task, erro
 	}
 
 	return patchedTask, nil
+}
+
+func (s *TasksService) DeleteTask(id int, userID int) error {
+	if err := s.rep.DeleteTask(id, userID); err != nil {
+		return err
+	}
+
+	return nil
 }

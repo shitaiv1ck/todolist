@@ -3,6 +3,7 @@ package tasks_repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/lib/pq"
 	"github.com/shitaiv1ck/todolist/internal/core/domains"
@@ -120,4 +121,29 @@ func (r *TasksRepository) UpdateTask(task *domains.Task) (*domains.Task, error) 
 	}
 
 	return &patchedTask, nil
+}
+
+func (r *TasksRepository) DeleteTask(id int, userID int) error {
+	db := r.store.GetDB()
+
+	query := `
+		DELETE FROM todolist.tasks
+		WHERE id = $1 AND user_id = $2;
+	`
+
+	result, err := db.Exec(query, id, userID)
+	if err != nil {
+		return err
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rows != 1 {
+		return fmt.Errorf("task doesn't exist: %w", core_errors.ErrNotFound)
+	}
+
+	return nil
 }
