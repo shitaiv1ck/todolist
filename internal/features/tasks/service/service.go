@@ -1,6 +1,10 @@
 package tasks_service
 
-import "github.com/shitaiv1ck/todolist/internal/core/domains"
+import (
+	"fmt"
+
+	"github.com/shitaiv1ck/todolist/internal/core/domains"
+)
 
 type TasksService struct {
 	rep TasksRepository
@@ -35,7 +39,7 @@ func (s *TasksService) UpdateTask(patch *domains.TaskPatch) (*domains.Task, erro
 	}
 
 	if err := foundTask.ApplyPatch(patch); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to apply patches: %w", err)
 	}
 
 	patchedTask, err := s.rep.UpdateTask(foundTask)

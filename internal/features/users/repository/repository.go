@@ -3,7 +3,6 @@ package users_repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/lib/pq"
 	"github.com/shitaiv1ck/todolist/internal/core/domains"
@@ -41,7 +40,7 @@ func (r *UsersRepository) CreateUser(user *domains.User) (*domains.User, error) 
 	); err != nil {
 		if errPQ, ok := err.(*pq.Error); ok {
 			if errPQ.Code == "23505" {
-				return nil, fmt.Errorf("%v: %w", err, core_errors.ErrConflict)
+				return nil, core_errors.ErrConflict
 			}
 		}
 

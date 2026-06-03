@@ -22,12 +22,12 @@ func NewService(repository UsersRepository) *UsersService {
 
 func (s *UsersService) CreateUser(user *domains.User) (*domains.User, error) {
 	if err := user.EncryptePassword(); err != nil {
-		return nil, fmt.Errorf("encrypte password: %w", err)
+		return nil, fmt.Errorf("failed to encrypte password: %w", err)
 	}
 
 	createdUser, err := s.repository.CreateUser(user)
 	if err != nil {
-		return nil, fmt.Errorf("save user: %w", err)
+		return nil, fmt.Errorf("failed to save user: %w", err)
 	}
 
 	return createdUser, err

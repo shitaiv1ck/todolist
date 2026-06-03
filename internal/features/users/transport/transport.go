@@ -33,7 +33,7 @@ func (ut *UsersTransport) CreateUserHandler() http.HandlerFunc {
 
 		var request CreateUserRequest
 		if err := core_request.DecodeAndValidate(r, &request); err != nil {
-			responseHandler.ErrorResponse("decode and validate", err)
+			responseHandler.ErrorResponse("failed to decode and validate", err)
 
 			return
 		}
@@ -45,7 +45,7 @@ func (ut *UsersTransport) CreateUserHandler() http.HandlerFunc {
 
 		createdUser, err := ut.service.CreateUser(user)
 		if err != nil {
-			responseHandler.ErrorResponse("create user", err)
+			responseHandler.ErrorResponse("failed to create user", err)
 
 			return
 		}
@@ -71,10 +71,6 @@ func (ut *UsersTransport) GetMeHandler() http.HandlerFunc {
 			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
 		}
 
-		response := map[string]int{
-			"id": userID.(int),
-		}
-
-		responseHandler.JsonResponse(response, http.StatusOK)
+		responseHandler.WriteHeader(http.StatusOK)
 	}
 }

@@ -35,7 +35,7 @@ func (st *SessionsTransport) CreateSessionHandler() http.HandlerFunc {
 
 		var request CreateSessionRequest
 		if err := core_request.DecodeAndValidate(r, &request); err != nil {
-			responseHandler.ErrorResponse("decode and validate", err)
+			responseHandler.ErrorResponse("failed to decode and validate", err)
 
 			return
 		}
@@ -49,7 +49,7 @@ func (st *SessionsTransport) CreateSessionHandler() http.HandlerFunc {
 
 		session, err := st.service.CreateSession(userID)
 		if err != nil {
-			responseHandler.ErrorResponse("create session", err)
+			responseHandler.ErrorResponse("failed to create session", err)
 
 			return
 		}

@@ -35,14 +35,14 @@ func (t *TasksTransport) CreateTaskHandler() http.HandlerFunc {
 
 		userID := r.Context().Value("user_id")
 		if userID == nil {
-			responseHandler.ErrorResponse("authenticate user", core_errors.ErrUnautorize)
+			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
 
 			return
 		}
 
 		var request CreateTaskRequest
 		if err := core_request.DecodeAndValidate(r, &request); err != nil {
-			responseHandler.ErrorResponse("decode and validate", err)
+			responseHandler.ErrorResponse("failed to decode and validate", err)
 
 			return
 		}
@@ -55,7 +55,7 @@ func (t *TasksTransport) CreateTaskHandler() http.HandlerFunc {
 
 		createdTask, err := t.service.CreateTask(task)
 		if err != nil {
-			responseHandler.ErrorResponse("create task", err)
+			responseHandler.ErrorResponse("failed to create task", err)
 
 			return
 		}
@@ -83,7 +83,7 @@ func (t *TasksTransport) PatchTaskHandler() http.HandlerFunc {
 
 		userID := r.Context().Value("user_id")
 		if userID == nil {
-			responseHandler.ErrorResponse("failed to authenticate", core_errors.ErrUnautorize)
+			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
 
 			return
 		}
@@ -97,7 +97,7 @@ func (t *TasksTransport) PatchTaskHandler() http.HandlerFunc {
 
 		var request PatchTaskRequest
 		if err := core_request.DecodeAndValidate(r, &request); err != nil {
-			responseHandler.ErrorResponse("decode and validate", err)
+			responseHandler.ErrorResponse("failed to decode and validate", err)
 
 			return
 		}
