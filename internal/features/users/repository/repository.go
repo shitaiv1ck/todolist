@@ -51,7 +51,7 @@ func (r *UsersRepository) CreateUser(user *domains.User) (*domains.User, error) 
 	return &savedUser, nil
 }
 
-func (r *UsersRepository) FindByUsername(username string) (*domains.User, error) {
+func (r *UsersRepository) GetUserByUsername(username string) (*domains.User, error) {
 	db := r.store.GetDB()
 
 	query := `

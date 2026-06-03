@@ -16,13 +16,13 @@ type SessionsService struct {
 }
 
 type UsersRepository interface {
-	FindByUsername(username string) (*domains.User, error)
+	GetUserByUsername(username string) (*domains.User, error)
 }
 
 type SessionsRepository interface {
 	CreateSession(session *domains.Session) (*domains.Session, error)
-	FindByToken(token string) (*domains.Session, error)
-	DeleteByToken(sessionToken string) error
+	GetSessionByToken(token string) (*domains.Session, error)
+	DeleteSessionByToken(sessionToken string) error
 }
 
 func NewService(usersRep UsersRepository, sessionsRep SessionsRepository) *SessionsService {
@@ -33,7 +33,7 @@ func NewService(usersRep UsersRepository, sessionsRep SessionsRepository) *Sessi
 }
 
 func (s *SessionsService) Authenticate(username string, password string) (int, error) {
-	user, err := s.usersRep.FindByUsername(username)
+	user, err := s.usersRep.GetUserByUsername(username)
 	if err != nil {
 		return -1, core_errors.ErrUnautorize
 	}
@@ -74,7 +74,7 @@ func (s *SessionsService) CreateSession(userID int) (*domains.Session, error) {
 }
 
 func (s *SessionsService) FindByToken(token string) (*domains.Session, error) {
-	foundSession, err := s.sessionsRep.FindByToken(token)
+	foundSession, err := s.sessionsRep.GetSessionByToken(token)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func generateToken(len int) (string, error) {
 }
 
 func (s *SessionsService) DeleteByToken(sessionToken string) error {
-	if err := s.sessionsRep.DeleteByToken(sessionToken); err != nil {
+	if err := s.sessionsRep.DeleteSessionByToken(sessionToken); err != nil {
 		return err
 	}
 

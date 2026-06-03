@@ -50,7 +50,7 @@ func (r *SessionsRepository) CreateSession(session *domains.Session) (*domains.S
 	return &createdSession, nil
 }
 
-func (r *SessionsRepository) FindByToken(token string) (*domains.Session, error) {
+func (r *SessionsRepository) GetSessionByToken(token string) (*domains.Session, error) {
 	db := r.store.GetDB()
 
 	query := `
@@ -79,7 +79,7 @@ func (r *SessionsRepository) FindByToken(token string) (*domains.Session, error)
 	return &foundSession, nil
 }
 
-func (r *SessionsRepository) DeleteByToken(sessionToken string) error {
+func (r *SessionsRepository) DeleteSessionByToken(sessionToken string) error {
 	db := r.store.GetDB()
 
 	query := `
