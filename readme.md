@@ -87,9 +87,69 @@ todolist
 | Endpoint                              | Описание                              |
 | ------------------------------------- | ------------------------------------- |
 | `POST` /api/users                     | Создание нового пользователя          |
-| `GET` /api/users/me                   | Получение текущей сессии              |
+| `GET` /api/users/me                   | Получение текущей сессии (необходимо пройти аутентификацию)             |
 | `POST` /api/sessions                  | Создание новой сессии                 | 
 | `DELETE` /api/protected/sessions      | Удаление текущей сессии               | 
 | `POST` /api/protected/tasks           | Создание новой задача                 | 
 | `PATCH` /api/protected/tasks{id}      | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
 | `DELETE` /api/protected/tasks{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) | 
+
+Для паттернов группы /api/protected/ дополнительно проверятеся аутентификация + csrf токен, переданный в запросе под заголовком **X-CSRF-Token**
+
+### JSON в теле запроса
+
+`POST` /api/users:
+
+```JSON
+{
+    "username": "some username",  # required, min=8, max=100, not null
+    "password": "some password"   # required, min=8, max=100, not null
+}
+```
+
+`GET` /api/users/me:
+
+```
+none
+```
+
+`POST` /api/sessions:
+
+```JSON
+{
+    "username": "some username",  # required, min=8, max=100, not null
+    "password": "some password"   # required, min=8, max=100, not null
+}
+```
+
+`DELETE` /api/protected/sessions:
+
+```
+none
+```
+
+`POST` /api/protected/tasks:
+
+```JSON
+{
+    "title": "some title",             # required, max=100, not null
+    "description": "some description"  # optional, max=1000
+}
+```
+
+`PATCH` /api/protected/tasks{id}:
+
+```JSON
+{
+    "title": "some title",             # optional, max=100, not null
+    "description": "some description", # optional, max=1000
+    "completed": true                  # optional, not null
+}
+```
+
+`DELETE` /api/protected/tasks{id}:
+
+```
+none
+```
+
