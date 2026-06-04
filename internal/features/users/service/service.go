@@ -12,6 +12,7 @@ type UsersService struct {
 
 type UsersRepository interface {
 	CreateUser(user *domains.User) (*domains.User, error)
+	FindByID(userID int) (*domains.User, error)
 }
 
 func NewService(repository UsersRepository) *UsersService {
@@ -31,4 +32,13 @@ func (s *UsersService) CreateUser(user *domains.User) (*domains.User, error) {
 	}
 
 	return createdUser, err
+}
+
+func (s *UsersService) GetUser(userID int) (*domains.User, error) {
+	foundUser, err := s.repository.FindByID(userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find user: %w", err)
+	}
+
+	return foundUser, err
 }

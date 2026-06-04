@@ -58,14 +58,18 @@ func (st *SessionsTransport) CreateSessionHandler() http.HandlerFunc {
 			Name:     "session_token",
 			Value:    session.SessionToken,
 			Expires:  session.ExpiresAt,
+			Path:     "/",
 			HttpOnly: true,
+			SameSite: http.SameSiteLaxMode,
 		})
 
 		http.SetCookie(w, &http.Cookie{
 			Name:     "csrf_token",
 			Value:    session.CSRFToken,
 			Expires:  session.ExpiresAt,
+			Path:     "/",
 			HttpOnly: false,
+			SameSite: http.SameSiteLaxMode,
 		})
 
 		responseHandler.WriteHeader(http.StatusCreated)
