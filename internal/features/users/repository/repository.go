@@ -77,3 +77,30 @@ func (r *UsersRepository) FindByUsername(username string) (*domains.User, error)
 
 	return &foundUser, nil
 }
+
+func (r *UsersRepository) FindByID(userID int) (*domains.User, error) {
+	db := r.store.GetDB()
+
+	query := `
+		SELECT id, username
+		FROM todolist.users
+		WHERE id = $1;
+	`
+
+	var foundUser domains.User
+	if err := db.QueryRow(
+		query,
+		userID,
+	).Scan(
+		&foundUser.ID,
+		&foundUser.Username,
+	); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, core_errors.ErrNotFound
+		}
+
+		return nil, err
+	}
+
+	return &foundUser, nil
+}

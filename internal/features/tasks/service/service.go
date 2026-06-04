@@ -12,6 +12,7 @@ type TasksService struct {
 
 type TasksRepository interface {
 	CreateTask(task *domains.Task) (*domains.Task, error)
+	GetTasks(userID int) ([]*domains.Task, error)
 	UpdateTask(task *domains.Task) (*domains.Task, error)
 	FindByUserID(id int, userID int) (*domains.Task, error)
 	DeleteTask(id int, userID int) error
@@ -30,6 +31,15 @@ func (s *TasksService) CreateTask(task *domains.Task) (*domains.Task, error) {
 	}
 
 	return createdTask, nil
+}
+
+func (s *TasksService) GetTasks(userID int) ([]*domains.Task, error) {
+	foundTasks, err := s.rep.GetTasks(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return foundTasks, nil
 }
 
 func (s *TasksService) UpdateTask(patch *domains.TaskPatch) (*domains.Task, error) {

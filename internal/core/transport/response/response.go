@@ -19,6 +19,12 @@ func NewResponseHandler(w http.ResponseWriter) *ResponseHandler {
 	}
 }
 
+func (rw *ResponseHandler) HtmlResponse(html []byte) {
+	rw.WriteHeader(http.StatusOK)
+	rw.Header().Set("Content-Type", "text/html; charset=utf-8")
+	rw.Write(html)
+}
+
 func (rw *ResponseHandler) JsonResponse(responseBody any, statusCode int) {
 	rw.WriteHeader(statusCode)
 

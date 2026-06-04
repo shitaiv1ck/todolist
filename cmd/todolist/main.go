@@ -19,6 +19,9 @@ import (
 	users_repository "github.com/shitaiv1ck/todolist/internal/features/users/repository"
 	users_service "github.com/shitaiv1ck/todolist/internal/features/users/service"
 	users_transport "github.com/shitaiv1ck/todolist/internal/features/users/transport"
+	web_repository "github.com/shitaiv1ck/todolist/internal/features/web/repository"
+	web_service "github.com/shitaiv1ck/todolist/internal/features/web/service"
+	web_transport "github.com/shitaiv1ck/todolist/internal/features/web/transport"
 )
 
 func main() {
@@ -48,8 +51,13 @@ func main() {
 	tasksService := tasks_service.NewService(tasksRepisotory)
 	tasksTransport := tasks_transport.NewTransport(tasksService)
 
+	webRepository := web_repository.NewRepository()
+	webService := web_service.NewService(webRepository)
+	webTransport := web_transport.NewTransport(webService)
+
 	private := http.NewServeMux()
 	private.Handle("GET /users/me", usersTransport.GetMeHandler())
+	private.Handle("GET /tasks", tasksTransport.GetTasksHandler())
 	privateRouter := core_middleware.ChainAuthenticated(private, sessionsService)
 
 	protected := http.NewServeMux()
@@ -60,6 +68,7 @@ func main() {
 	protectedRouter := core_middleware.ChainProtected(protected, sessionsService)
 
 	common := http.NewServeMux()
+	common.Handle("/", webTransport.GetMainPageHandler())
 	common.Handle("POST /api/users", usersTransport.CreateUserHandler())
 	common.Handle("POST /api/sessions", sessionsTransport.CreateSessionHandler())
 	common.Handle("/api/", http.StripPrefix("/api", privateRouter))

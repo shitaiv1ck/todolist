@@ -57,6 +57,45 @@ func (r *TasksRepository) CreateTask(task *domains.Task) (*domains.Task, error) 
 	return &createdTask, nil
 }
 
+func (r *TasksRepository) GetTasks(userID int) ([]*domains.Task, error) {
+	db := r.store.GetDB()
+
+	query := `
+		SELECT * FROM todolist.tasks
+		WHERE user_id = $1;
+	`
+
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, core_errors.ErrNotFound
+		}
+
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := make([]*domains.Task, 0)
+	for rows.Next() {
+		var task domains.Task
+		if err := rows.Scan(
+			&task.ID,
+			&task.UserID,
+			&task.Title,
+			&task.Description,
+			&task.Completed,
+			&task.CreatedAt,
+			&task.CompletedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	return tasks, nil
+}
+
 func (r *TasksRepository) FindByUserID(id int, userID int) (*domains.Task, error) {
 	db := r.store.GetDB()
 

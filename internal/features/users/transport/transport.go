@@ -16,6 +16,7 @@ type UsersTransport struct {
 
 type UsersService interface {
 	CreateUser(user *domains.User) (*domains.User, error)
+	GetUser(userID int) (*domains.User, error)
 }
 
 func NewTransport(service UsersService) *UsersTransport {
@@ -69,8 +70,22 @@ func (ut *UsersTransport) GetMeHandler() http.HandlerFunc {
 		userID := r.Context().Value("user_id")
 		if userID == nil {
 			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
+
+			return
 		}
 
-		responseHandler.WriteHeader(http.StatusOK)
+		user, err := ut.service.GetUser(userID.(int))
+		if err != nil {
+			responseHandler.ErrorResponse("failed to get user", err)
+
+			return
+		}
+
+		response := GetUserResponse{
+			ID:       user.ID,
+			Username: user.Username,
+		}
+
+		responseHandler.JsonResponse(response, http.StatusOK)
 	}
 }

@@ -16,6 +16,7 @@ type TasksTransport struct {
 
 type TasksService interface {
 	CreateTask(task *domains.Task) (*domains.Task, error)
+	GetTasks(userID int) ([]*domains.Task, error)
 	UpdateTask(patch *domains.TaskPatch) (*domains.Task, error)
 	DeleteTask(id int, userID int) error
 }
@@ -71,6 +72,33 @@ func (t *TasksTransport) CreateTaskHandler() http.HandlerFunc {
 		}
 
 		responseHandler.JsonResponse(response, http.StatusCreated)
+	}
+}
+
+func (t *TasksTransport) GetTasksHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		logger := core_logger.FromContext(r.Context())
+		responseHandler := core_response.NewResponseHandler(w)
+
+		logger.Debug("invoke GetTasks handler")
+
+		userID := r.Context().Value("user_id")
+		if userID == nil {
+			responseHandler.ErrorResponse("failed to authentication", core_errors.ErrUnautorize)
+
+			return
+		}
+
+		tasks, err := t.service.GetTasks(userID.(int))
+		if err != nil {
+			responseHandler.ErrorResponse("failed to get tasks", err)
+
+			return
+		}
+
+		response := parseTasksToResponse(tasks)
+
+		responseHandler.JsonResponse(response, http.StatusOK)
 	}
 }
 

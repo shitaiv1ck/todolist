@@ -9,3 +9,8 @@ type CreateUserResponse struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 }
+
+type GetUserResponse struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+}
