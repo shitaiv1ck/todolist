@@ -765,7 +765,6 @@
             return username.substring(0, 2).toUpperCase();
         }
 
-        // Форматирование Go duration строки (например, "3h22m11.001571s")
         function formatDuration(durationStr) {
             if (!durationStr || durationStr === '0s') return '—';
 
@@ -905,7 +904,7 @@
 
         function renderStats(stats) {
             const statsContent = document.getElementById('stats-content');
-
+            
             if (!stats || stats.total_tasks === 0) {
                 statsContent.innerHTML = `
                     <div class="stats-empty">
@@ -916,6 +915,7 @@
             }
 
             const rate = stats.total_completed_rate || 0;
+            const rateFormatted = rate.toFixed(2);
             const avgTime = formatDuration(stats.avg_completed_time);
             const remaining = stats.total_tasks - stats.total_completed;
 
@@ -933,7 +933,7 @@
                     </div>
                     <div class="stat-card rate">
                         <div class="stat-label">Прогресс выполнения</div>
-                        <div class="stat-value">${rate}%</div>
+                        <div class="stat-value">${rateFormatted}%</div>
                         <div class="stat-subtext">Завершено от общего числа</div>
                     </div>
                     <div class="stat-card time">
@@ -945,7 +945,7 @@
                 <div class="progress-container">
                     <div class="progress-header">
                         <div class="progress-title">Общий прогресс</div>
-                        <div class="progress-percentage">${rate}%</div>
+                        <div class="progress-percentage">${rateFormatted}%</div>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill completed" style="width: ${rate}%"></div>
@@ -991,11 +991,9 @@
             }
         }
 
-        // Переключение вкладок
         function switchTab(tabName) {
             state.activeTab = tabName;
 
-            // Обновляем активный пункт меню
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.tab === tabName) {
@@ -1003,7 +1001,6 @@
                 }
             });
 
-            // Обновляем заголовок
             const titles = {
                 tasks: { title: 'Мои задачи', subtitle: 'Управляйте своими задачами' },
                 stats: { title: 'Статистика', subtitle: 'Аналитика по вашим задачам' }
@@ -1014,14 +1011,13 @@
                 document.getElementById('tab-subtitle').textContent = titles[tabName].subtitle;
             }
 
-            // Переключаем видимость контента
             if (tabName === 'tasks') {
                 document.getElementById('tasks-view').classList.remove('hidden');
                 document.getElementById('stats-view').classList.add('hidden');
             } else if (tabName === 'stats') {
                 document.getElementById('tasks-view').classList.add('hidden');
                 document.getElementById('stats-view').classList.remove('hidden');
-                fetchStats(); // Загружаем статистику при переключении
+                fetchStats();
             }
         }
 
@@ -1077,7 +1073,7 @@
                 state.currentUser = null;
                 state.stats = null;
                 setEditMode();
-                switchTab('tasks'); // Сбрасываем на вкладку задач
+                switchTab('tasks');
                 showAuthView();
             }
         });

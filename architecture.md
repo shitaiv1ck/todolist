@@ -2,12 +2,17 @@
 ```
 todolist
 ├─ api.md
-├─ architecrure.md
+├─ architecture.md
 ├─ cmd
 │  └─ todolist
 │     └─ main.go
 ├─ docker-compose.yaml
 ├─ docs
+│  ├─ createtask.gif
+│  ├─ deletetask.gif
+│  ├─ getstatistics.gif
+│  ├─ patchtask.gif
+│  └─ regandauth.gif
 ├─ go.mod
 ├─ go.sum
 ├─ internal
@@ -15,6 +20,7 @@ todolist
 │  │  ├─ domains
 │  │  │  ├─ nullable.go
 │  │  │  ├─ session.go
+│  │  │  ├─ statistics.go
 │  │  │  ├─ task.go
 │  │  │  └─ user.go
 │  │  ├─ errors
@@ -42,6 +48,12 @@ todolist
 │     ├─ sessions
 │     │  ├─ repository
 │     │  │  └─ repository.go
+│     │  ├─ service
+│     │  │  └─ service.go
+│     │  └─ transport
+│     │     ├─ dto.go
+│     │     └─ transport.go
+│     ├─ statistics
 │     │  ├─ service
 │     │  │  └─ service.go
 │     │  └─ transport
@@ -87,3 +99,8 @@ todolist
 | **users**          | `id` (GENERATED)               | Пользователь (хранит информацию о пользователе)             |
 | **sessions**       | `session_token` (VARCHAR(255)) | Сессия пользователя (хранит файлы cookie + ID пользователя) |
 | **tasks**          | `id` (GENERATED)               | Задача (хранит информацию о созданной задаче + ID пользователя) |
+
+
+### Диаграмма
+
+![diagram](docs/dbdiagram.png)
