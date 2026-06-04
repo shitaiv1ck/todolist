@@ -13,6 +13,8 @@ import (
 	sessions_repository "github.com/shitaiv1ck/todolist/internal/features/sessions/repository"
 	sessions_service "github.com/shitaiv1ck/todolist/internal/features/sessions/service"
 	sessions_transport "github.com/shitaiv1ck/todolist/internal/features/sessions/transport"
+	statistics_service "github.com/shitaiv1ck/todolist/internal/features/statistics/service"
+	statistics_transport "github.com/shitaiv1ck/todolist/internal/features/statistics/transport"
 	tasks_repository "github.com/shitaiv1ck/todolist/internal/features/tasks/repository"
 	tasks_service "github.com/shitaiv1ck/todolist/internal/features/tasks/service"
 	tasks_transport "github.com/shitaiv1ck/todolist/internal/features/tasks/transport"
@@ -51,6 +53,9 @@ func main() {
 	tasksService := tasks_service.NewService(tasksRepisotory)
 	tasksTransport := tasks_transport.NewTransport(tasksService)
 
+	statisticsService := statistics_service.NewService(tasksRepisotory)
+	statisticsTransport := statistics_transport.NewTransport(statisticsService)
+
 	webRepository := web_repository.NewRepository()
 	webService := web_service.NewService(webRepository)
 	webTransport := web_transport.NewTransport(webService)
@@ -58,6 +63,7 @@ func main() {
 	private := http.NewServeMux()
 	private.Handle("GET /users/me", usersTransport.GetMeHandler())
 	private.Handle("GET /tasks", tasksTransport.GetTasksHandler())
+	private.Handle("GET /statistics", statisticsTransport.GetStatisticsHandler())
 	privateRouter := core_middleware.ChainAuthenticated(private, sessionsService)
 
 	protected := http.NewServeMux()

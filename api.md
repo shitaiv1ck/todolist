@@ -3,12 +3,15 @@
 | Endpoint                              | Описание                              |
 | ------------------------------------- | ------------------------------------- |
 | `POST` /api/users                     | Создание нового пользователя          |
-| `GET` /api/users/me                   | Получение текущей сессии (необходимо пройти аутентификацию)             |
+| `GET` /api/users/me                   | Получение текущей сессии (необходимо пройти аутентификацию) |
 | `POST` /api/sessions                  | Создание новой сессии                 | 
 | `DELETE` /api/protected/sessions      | Удаление текущей сессии               | 
-| `POST` /api/protected/tasks           | Создание новой задача                 | 
+| `POST` /api/protected/tasks           | Создание новой задача                 |
+| `GET` /api/tasks            | Получение всех задач пользователя (ID пользователя берется из текущей сессии) | 
 | `PATCH` /api/protected/tasks{id}      | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
-| `DELETE` /api/protected/tasks{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) | 
+| `DELETE` /api/protected/tasks{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) |
+| `GET` /api/statistics                 | Получение статистики по задачам пользователя (ID пользователя берется из текущей сессии) |  
+
 
 Для паттернов группы /api/protected/ дополнительно проверятеся аутентификация + csrf токен, переданный в запросе под заголовком **X-CSRF-Token**
 
@@ -48,6 +51,13 @@ Response body:
     "message": "failed to create user",
     "error": "failed to save user: already exists"
 }
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
 ```
 
 **`GET` /api/users/me:**
@@ -69,6 +79,14 @@ Response body:
 {
     "message": "failed to authentication",
     "error": "invalid cookie's values"
+}
+```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
 }
 ```
 
@@ -96,6 +114,14 @@ Response body:
     "error": "invalid username or password"
 }
 ```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
+```
 
 **`DELETE` /api/protected/sessions:**
 
@@ -116,6 +142,14 @@ Response body:
 {
     "message": "failed to authentication",
     "error": "invalid cookie's values"
+}
+```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
 }
 ```
 
@@ -167,6 +201,64 @@ Response body:
     "error": "failed to save task: already exists"
 }
 ```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
+```
+
+**`GET` /api/tasks:**
+
+Request body:
+```JSON
+{}
+```
+
+Response body:
+```JSON
+200 OK
+
+[
+    {
+        "id": 5,
+        "user_id": 4,
+        "title": "test",
+        "description": "some description",
+        "completed": true,
+        "created_at": "2026-06-04T16:52:13.874257Z",
+        "completed_at": "2026-06-04T16:52:30.153441Z"
+    },
+    {
+        "id": 6,
+        "user_id": 4,
+        "title": "test again",
+        "description": "some description",
+        "completed": false,
+        "created_at": "2026-06-04T16:59:21.126815Z",
+        "completed_at": null
+    }
+]
+```
+```JSON
+401 Unautorized
+
+{
+    "message": "failed to authentication",
+    "error": "invalid cookie's values"
+}
+```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
+```
+
 
 **`PATCH` /api/protected/tasks{id}:**
 
@@ -217,6 +309,14 @@ Response body:
     "error": "not found"
 }
 ```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
+```
 
 **`DELETE` /api/protected/tasks{id}:**
 
@@ -245,5 +345,48 @@ Response body:
 {
     "message": "failed to authentication",
     "error": "invalid cookie's values"
+}
+```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
+}
+```
+
+**`GET` /api/statistics:**
+
+Request body:
+```JSON
+{}
+```
+
+Response body:
+```JSON
+200 OK
+
+{
+    "total_tasks": 2,
+    "total_completed": 1,
+    "total_completed_rate": 50,
+    "avg_completed_time": "3h22m11.001571s"
+}
+```
+```JSON
+401 Unautorized
+
+{
+    "message": "failed to authentication",
+    "error": "invalid cookie's values"
+}
+```
+```JSON
+500 Internal Server Error
+
+{
+    "message": "failed to create user",
+    "error": "some error"
 }
 ```

@@ -33,6 +33,20 @@ func NewUninitializedTask(
 	}
 }
 
+func (t *Task) CompletionTime() *time.Duration {
+	if !t.Completed {
+		return nil
+	}
+
+	if t.CompletedAt == nil {
+		return nil
+	}
+
+	completionTime := t.CompletedAt.Sub(t.CreatedAt)
+
+	return &completionTime
+}
+
 type TaskPatch struct {
 	ID          int
 	UserID      int
