@@ -51,6 +51,7 @@ Response body:
     "message": "failed to create user",
     "error": "failed to save user: already exists"
 }
+```
 ```JSON
 500 Internal Server Error
 

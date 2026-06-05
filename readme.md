@@ -20,9 +20,7 @@
 
 ### Требования
 
-- [go 1.25.5](https://go.dev/dl/)
-- [Makefile 4.4.1](https://dev.to/sidneyops75/introduction-to-makefiles-for-go-developers-4fhb)
-- [Migrate 4.19.1](https://github.com/golang-migrate/migrate)
+- [Migrate](https://github.com/golang-migrate/migrate)
 - [Docker](https://www.docker.com/get-started/)
 
 ### Как запустить
@@ -47,7 +45,7 @@ LOG_LEVEL=DEBUG
 ```bash
 make env-up && \
 make migrate-up && \
-make app-run
+make app-deploy
 ```
 
 3. **Открыть** в браузере ссылку http://localhost:8080/ или любую другую, указанную в `HTTP_ADDR`
