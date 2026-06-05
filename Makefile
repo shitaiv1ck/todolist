@@ -44,6 +44,7 @@ app-deploy:
 	@docker compose up -d --build todolist
 
 app-stop:
-	@docker compose down todolist
+	@docker compose down todolist && \
+	make env-down
 
 	

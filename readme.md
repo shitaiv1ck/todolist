@@ -1,5 +1,10 @@
 # REST API TODOLIST APPLICATION
 
+![Go Version](https://img.shields.io/badge/Go-1.25.5+-00ADD8?logo=go)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.3-4169E1?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)
+![REST API](https://img.shields.io/badge/REST-API-blue)
+
 Веб-приложение, реализованное по принципам REST API.
 
 ## Функционал
