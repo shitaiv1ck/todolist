@@ -8,8 +8,8 @@
 | `DELETE` /api/protected/sessions      | Удаление текущей сессии               | 
 | `POST` /api/protected/tasks           | Создание новой задача                 |
 | `GET` /api/tasks            | Получение всех задач пользователя (ID пользователя берется из текущей сессии) | 
-| `PATCH` /api/protected/tasks{id}      | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
-| `DELETE` /api/protected/tasks{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) |
+| `PATCH` /api/protected/tasks/{id}      | Изменение задачи по ID задачи (ID пользователя берется из текущей сессии) | 
+| `DELETE` /api/protected/tasks/{id}     | Удаление задачи по ID задачи (ID пользователя берется из текущей сессии) |
 | `GET` /api/statistics                 | Получение статистики по задачам пользователя (ID пользователя берется из текущей сессии) |  
 
 
@@ -65,7 +65,10 @@ Response body:
 
 Request body:
 ```JSON
-{}
+{
+    "id": 3,
+    "username": "some username"
+}
 ```
 
 Response body:
@@ -96,8 +99,8 @@ Response body:
 Request body:
 ```JSON
 {
-    "username": "some username",  # required, min=8, max=100, not null
-    "password": "some password"   # required, min=8, max=100, not null
+    "username": "some username", 
+    "password": "some password"  
 }
 ```
 
@@ -119,7 +122,7 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to create session",
     "error": "some error"
 }
 ```
@@ -149,7 +152,7 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to delete session",
     "error": "some error"
 }
 ```
@@ -159,8 +162,8 @@ Response body:
 Request body:
 ```JSON
 {
-    "title": "some title",             # required, max=100, not null
-    "description": "some description"  # optional, max=1000
+    "title": "some title",             
+    "description": "some description" 
 }
 ```
 
@@ -206,7 +209,7 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to create task",
     "error": "some error"
 }
 ```
@@ -255,20 +258,20 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to get tasks",
     "error": "some error"
 }
 ```
 
 
-**`PATCH` /api/protected/tasks{id}:**
+**`PATCH` /api/protected/tasks/{id}:**
 
 Request body:
 ```JSON
 {
-    "title": "patched title",             # optional, max=100, not null
-    "description": "patched description", # optional, max=1000
-    "completed": true                     # optional, not null
+    "title": "patched title",             
+    "description": "patched description", 
+    "completed": true                    
 }
 ```
 
@@ -314,12 +317,12 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to patch task",
     "error": "some error"
 }
 ```
 
-**`DELETE` /api/protected/tasks{id}:**
+**`DELETE` /api/protected/tasks/{id}:**
 
 Request body:
 ```JSON
@@ -352,7 +355,7 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to delete task",
     "error": "some error"
 }
 ```
@@ -387,7 +390,7 @@ Response body:
 500 Internal Server Error
 
 {
-    "message": "failed to create user",
+    "message": "failed to get statistics",
     "error": "some error"
 }
 ```
