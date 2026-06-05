@@ -7,8 +7,10 @@ todolist
 │  └─ todolist
 │     └─ main.go
 ├─ docker-compose.yaml
+├─ Dockerfile
 ├─ docs
 │  ├─ createtask.gif
+│  ├─ dbdiagram.png
 │  ├─ deletetask.gif
 │  ├─ getstatistics.gif
 │  ├─ patchtask.gif

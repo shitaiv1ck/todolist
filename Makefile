@@ -9,22 +9,41 @@ env-up:
 env-down:
 	@docker compose down todolist-postgres
 
+migrate-create:
+	@if [ -z "$(seq)"]; then \
+		echo "seq don't hava a value. pls, try again with seq=value"; \
+		exit 1;\
+	fi; \
+	docker compose run --rm todolist-migrate \
+	create -ext sql -dir ./migrations -seq "${seq}"
+
+
 migrate-up:
-	@migrate -path ./migrations -database \
-	"postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" \
-	up
+	@docker compose run --rm todolist-migrate \
+	-path ./migrations \
+	-database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todolist-postgres:5432/${POSTGRES_DB}?sslmode=disable" \
+	up 
 
 migrate-down:
-	@migrate -path ./migrations -database \
-	"postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" \
-	down
+	@docker compose run --rm todolist-migrate \
+	-path ./migrations \
+	-database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todolist-postgres:5432/${POSTGRES_DB}?sslmode=disable" \
+	down 
 
 migrate-force:
-	@migrate -path ./migrations -database \
-	"postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable" \
+	@docker compose run --rm todolist-migrate \
+	-path ./migrations \
+	-database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todolist-postgres:5432/${POSTGRES_DB}?sslmode=disable" \
 	force 1
 
 app-run:
-	@go run ./cmd/todolist/main.go
+	@go mod tidy && \
+	go run ${PROJECT_ROOT}/cmd/todolist/main.go
+
+app-deploy:
+	@docker compose up -d --build todolist
+
+app-stop:
+	@docker compose down todolist
 
 	
